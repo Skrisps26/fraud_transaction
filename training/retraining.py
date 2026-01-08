@@ -1,4 +1,3 @@
-# training/retrain.py
 import sys
 from pathlib import Path
 

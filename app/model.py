@@ -1,8 +1,38 @@
+import threading
+from pathlib import Path
+
 import numpy as np
 import xgboost as xgb
 
-booster = xgb.Booster()
-booster.load_model("models/model_v1.json")
+MODEL_PATH = Path("training/models/latest.json")
+
+_model: xgb.Booster | None = None
+_lock = threading.Lock()
+
+
+def _load() -> xgb.Booster:
+    if not MODEL_PATH.exists():
+        raise RuntimeError("latest model not found")
+    booster = xgb.Booster()
+    booster.load_model(str(MODEL_PATH))
+    return booster
+
+
+def get_model() -> xgb.Booster:
+    global _model
+    if _model is None:
+        with _lock:
+            if _model is None:
+                _model = _load()
+    return _model
+
+
+def reload_model() -> None:
+    global _model
+    new_model = _load()
+    with _lock:
+        _model = new_model
+
 
 FEATURE_COLUMNS = [
     "log_amount",
@@ -27,8 +57,8 @@ def predict_fraud(features: dict) -> float:
 
     dmatrix = xgb.DMatrix(
         x,
-        feature_names=FEATURE_COLUMNS,  # 👈 THIS IS THE KEY
+        feature_names=FEATURE_COLUMNS,  # balls
     )
 
-    prob = booster.predict(dmatrix)[0]
+    prob = get_model().predict(dmatrix)[0]
     return float(prob)

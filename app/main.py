@@ -1,13 +1,28 @@
+from contextlib import asynccontextmanager
+
+import numpy as np
 from fastapi import FastAPI
 
-from app.model import predict_fraud
+from app.model import get_model, predict_fraud, reload_model
 from app.schemas import PredictionResponse, Transaction
 
-app = FastAPI(
-    title="Fraud Risk Scoring API",
-    description="XGBoost-based fraud detection model",
-    version="1.0",
-)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    get_model()
+    yield
+    # Shutdown (nothing to clean up)
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.post("/reload-model")
+def reload():
+    reload_model()
+    return {"status": "reloaded"}
+
 
 THRESHOLD = 0.9
 

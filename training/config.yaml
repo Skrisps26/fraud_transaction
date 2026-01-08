@@ -1,0 +1,16 @@
+data:
+  path: data/transactions.csv
+
+training:
+  test_days: 7
+  min_auc_improvement: 0.002
+
+xgboost:
+  objective: binary:logistic
+  eval_metric: auc
+  max_depth: 6
+  eta: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  seed: 42
+  num_boost_round: 200

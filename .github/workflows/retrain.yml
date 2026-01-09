@@ -1,5 +1,8 @@
 name: Scheduled Model Retraining
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 3 * * 0" # Weekly, Sunday 3AM UTC

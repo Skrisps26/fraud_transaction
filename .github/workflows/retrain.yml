@@ -41,7 +41,7 @@ jobs:
       - name: Download dataset
         run: |
           mkdir -p data
-          curl -L "https://transaction-fuck.s3.us-east-1.amazonaws.com/PS_20174392719_1491204439457_log.csv" -o data/transactions.csv
+          curl -L https://transaction-fuck.s3.us-east-1.amazonaws.com/PS_20174392719_1491204439457_log.csv" -o data/transactions.csv
         # - name: Reload model in FastAPI
         #   if: steps.retrain.outcome == 'success'
         #   run: |

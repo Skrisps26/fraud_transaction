@@ -23,6 +23,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Download dataset
+        run: |
+          mkdir -p data
+          curl -L https://transaction-fuck.s3.us-east-1.amazonaws.com/PS_20174392719_1491204439457_log.csv -o data/transactions.csv
+
       - name: Run retraining pipeline
         id: retrain
         run: |
@@ -38,10 +43,6 @@ jobs:
           git commit -m "Auto-promote model via retraining pipeline"
           git push
 
-      - name: Download dataset
-        run: |
-          mkdir -p data
-          curl -L https://transaction-fuck.s3.us-east-1.amazonaws.com/PS_20174392719_1491204439457_log.csv -o data/transactions.csv
         # - name: Reload model in FastAPI
         #   if: steps.retrain.outcome == 'success'
         #   run: |

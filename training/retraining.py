@@ -17,13 +17,8 @@ def load_config():
 
 
 def load_data(path):
-    df = pd.read_csv(path, sep=None, engine="python")
-    df.columns = (
-        df.columns.str.strip()  # remove spaces
-        .str.lower()  # normalize case
-        .str.replace("\ufeff", "", regex=False)  # remove BOM
-    )
-
+    df = pd.read_csv(path)
+    df = df[df["type"].isin(["CASH_OUT", "TRANSFER", "PAYMENT", "DEBIT"])]
     return df
 
 
